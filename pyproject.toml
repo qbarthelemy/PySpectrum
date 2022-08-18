@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "pyspectrum"
+version = "0.1.0"
+description = "PySpectrum is a Python package for spectral analysis"
+authors = ["Quentin Barthelemy"]
+license = "BSD-3-Clause"
+readme = "README.md"
+homepage = "https://github.com/qbarthelemy/PySpectrum"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Signal Processing",
+]
+packages = [
+    { include = "pyspectrum" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+numpy = "^1.16.5"
+scipy = "^1.6.0"
+matplotlib = "^3.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
