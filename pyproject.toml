@@ -21,6 +21,7 @@ packages = [
 python = "^3.7"
 numpy = "^1.16.5"
 scipy = "^1.6.0"
+Pillow = "^9.0.0"
 matplotlib = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
