@@ -7,7 +7,7 @@ To execute tests:
 import pytest
 import numpy as np
 from scipy.signal import dlti, cheby1
-from pyspectrum.src import downsample, upsample, upiirdn
+from pyspectrum.resampling import downsample, upsample, upiirdn
 
 np.random.seed(17)
 

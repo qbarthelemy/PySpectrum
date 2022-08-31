@@ -42,7 +42,7 @@ def downsample(x, factor, *, offset=0, axis=None):
 
     Parameters
     ----------
-    x : ndarray
+    x : array_like
         Array to downsample.
 
     factor : integer
@@ -89,7 +89,7 @@ def upsample(x, factor, *, offset=0, axis=None):
 
     Parameters
     ----------
-    x : ndarray
+    x : array_like
         Array to upsample.
 
     factor : integer
@@ -138,7 +138,7 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
 
     Parameters
     ----------
-    x : ndarray
+    x : array_like
         Array to resample.
 
     iir : dlti object

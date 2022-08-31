@@ -12,7 +12,7 @@ import scipy.misc as misc
 from matplotlib import pyplot as plt
 from PIL import Image
 
-from pyspectrum.src import downsample
+from pyspectrum.resampling import downsample
 from pyspectrum.viz import plot_spectrum2, remove_ticks
 
 

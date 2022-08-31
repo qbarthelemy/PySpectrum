@@ -15,7 +15,7 @@ from scipy.signal import (
 )
 from matplotlib import pyplot as plt
 
-from pyspectrum.src import upiirdn
+from pyspectrum.resampling import upiirdn
 from pyspectrum.viz import plot_welch
 
 
@@ -105,7 +105,7 @@ plt.show()
 
 if up == 1:  # only for non-fractional src
 
-    ecg_down = ecg[::down]  # equivalent to pyspectrum.src.downsample in 1D
+    ecg_down = ecg[::down]
 
     fig, ax = plt.subplots()
     fig.suptitle('ECG resampled in time domain\nwithout anti-aliasing filter',
