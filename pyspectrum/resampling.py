@@ -1,4 +1,4 @@
-""" Functions for sample-rate conversion of multidimensional arrays. """
+"""Functions for sample-rate conversion of multidimensional arrays."""
 
 import numbers
 
@@ -7,7 +7,7 @@ from scipy.signal import lfilter, filtfilt
 
 
 def _check_args(factor, offset):
-    """ This function checks arguments. """
+    """This function checks arguments."""
     if factor != int(factor):
         raise ValueError('Parameter factor must be an integer')
     if factor <= 0:
@@ -17,7 +17,7 @@ def _check_args(factor, offset):
 
 
 def _check_axis(x, axis):
-    """ This function checks axis and return axis in tuple format. """
+    """This function checks axis and return axis in tuple format."""
     if axis is None:
         axis = tuple(range(x.ndim))
     else:
@@ -34,7 +34,7 @@ def _check_axis(x, axis):
 
 
 def downsample(x, factor, *, offset=0, axis=None):
-    """ Downsample multidimensional array.
+    """Downsample multidimensional array.
 
     This function reduces sampling rate of a multidimensional array x,
     by integer factor with included offset.
@@ -48,10 +48,10 @@ def downsample(x, factor, *, offset=0, axis=None):
     factor : integer
         Downsampling factor, strictly positive.
 
-    offset : integer (default 0)
+    offset : integer, default 0
         Offset for sampling.
 
-    axis : None | int | tuple of int (default None)
+    axis : None | int | tuple of int, default None
         Axis or axes along which to downsample.
         If None, input array is downsampled along all its dimensions.
 
@@ -81,7 +81,7 @@ def downsample(x, factor, *, offset=0, axis=None):
 
 
 def upsample(x, factor, *, offset=0, axis=None):
-    """ Upsample multidimensional array.
+    """Upsample multidimensional array.
 
     This function increases sampling rate of a multidimensional array x,
     by integer factor with included offset, adding zeros.
@@ -95,10 +95,10 @@ def upsample(x, factor, *, offset=0, axis=None):
     factor : integer
         Upsampling factor, strictly positive.
 
-    offset : integer (default 0)
+    offset : integer, default 0
         Offset for sampling.
 
-    axis : None | int | tuple of int (default None)
+    axis : None | int | tuple of int, default None
         Axis or axes along which to upsample.
         If None, input array is upsampled along all its dimensions.
 
@@ -130,7 +130,7 @@ def upsample(x, factor, *, offset=0, axis=None):
 
 
 def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
-    """ Upsample, IIR filter, and downsample.
+    """Upsample, IIR filter, and downsample.
 
     This function performs an IIR-based resampling: upsampling,
     IIR anti-aliasing filtering, and downsampling.
@@ -144,16 +144,16 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
     iir : dlti object
         One-dimensional IIR (infinite-impulse response) filter [2]_.
 
-    up : int (default 1)
+    up : int, default 1
         Upsampling factor.
 
-    down : int (default 1)
+    down : int, default 1
         Downsampling factor.
 
-    zero_phase : bool (default True)
+    zero_phase : bool, default True
         Prevent phase shift by filtering with filtfilt instead of lfilter.
 
-    axis : int (default -1)
+    axis : int, default -1
         Axis along which to resample: upsample, filter (applied to each
         subarray along this axis), and downsample.
 

@@ -14,7 +14,7 @@ PySpectrum is distributed under the open source 3-clause BSD license.
 
 In signal processing,
 [sample-rate conversion](https://en.wikipedia.org/wiki/Sample-rate_conversion)
-(SRC) is the process of changing the sampling rate of a discrete signal: 
+(SRC) (also called resampling) is the process of changing the sampling rate of a discrete signal: 
 [downsampling](https://en.wikipedia.org/wiki/Downsampling_(signal_processing))
 or [upsampling](https://en.wikipedia.org/wiki/Upsampling).
 SRC can generate

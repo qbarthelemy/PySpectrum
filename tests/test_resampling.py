@@ -1,7 +1,7 @@
-""" Tests for module src.
+"""Tests for module resampling.
 
 To execute tests:
->>> pytest -k test_src
+>>> pytest -k test_resampling
 """
 
 import pytest
@@ -15,7 +15,7 @@ np.random.seed(17)
 @pytest.mark.parametrize("fun", [downsample, upsample])
 @pytest.mark.parametrize("axis", [1.1, "blabla", 2])
 def test_resample_axis_errors(fun, axis):
-    """ This function checks resample errors for axis. """
+    """Check resample errors for axis."""
     x = np.random.randn(5, 5)
     with pytest.raises((ValueError, IndexError)):
         fun(x, 2, axis=axis)
@@ -24,7 +24,7 @@ def test_resample_axis_errors(fun, axis):
 @pytest.mark.parametrize("fun", [downsample, upsample])
 @pytest.mark.parametrize("factor", [0, 2.5, -3])
 def test_resample_factor_errors(fun, factor):
-    """ This function checks resample errors for factor. """
+    """Check resample errors for factor."""
     with pytest.raises(ValueError):
         fun(None, factor)
 
@@ -33,7 +33,7 @@ def test_resample_factor_errors(fun, factor):
 @pytest.mark.parametrize("ndim", range(1, 3))
 @pytest.mark.parametrize("offset", range(0, 3))
 def test_resample_factor_1(fun, ndim, offset):
-    """ This function checks resample with factor=1 is identity. """
+    """Check resample with factor=1 is identity."""
     dims = np.random.randint(10, high=20, size=ndim)
     x = np.random.randint(-10, high=10, size=dims)
     y = fun(x, factor=1, offset=offset)
@@ -46,7 +46,7 @@ def test_resample_factor_1(fun, ndim, offset):
 @pytest.mark.parametrize("fun", [downsample, upsample])
 @pytest.mark.parametrize("offset", [2.5, -1.1])
 def test_resample_offset_errors(fun, offset):
-    """ This function checks resample errors for offset. """
+    """Checks resample errors for offset."""
     with pytest.raises(ValueError):
         fun(None, 2, offset=offset)
 
@@ -54,7 +54,7 @@ def test_resample_offset_errors(fun, offset):
 @pytest.mark.parametrize("ndim", range(1, 4))
 @pytest.mark.parametrize("factor", range(1, 5))
 def test_downsample_axisnone(ndim, factor):
-    """ This function tests the function downsample for axis=None. """
+    """Test function downsample for axis=None."""
     dims = np.random.randint(10, high=50, size=ndim)
     x = np.random.randn(*dims * factor)
     y = downsample(x, factor)
@@ -66,7 +66,7 @@ def test_downsample_axisnone(ndim, factor):
 @pytest.mark.parametrize("ndim", range(1, 4))
 @pytest.mark.parametrize("factor", range(1, 5))
 def test_downsample_axis(ndim, factor):
-    """ This function tests the function downsample for a specific axis. """
+    """Test function downsample for a specific axis."""
     axis = np.random.randint(0, high=ndim, size=1)[0]
     dims = np.random.randint(10, high=50, size=ndim)
     x = np.random.randn(*dims * factor)
@@ -83,7 +83,7 @@ def test_downsample_axis(ndim, factor):
 @pytest.mark.parametrize("ndim", range(2, 5))
 @pytest.mark.parametrize("factor", range(1, 4))
 def test_downsample_axes(ndim, factor):
-    """ This function tests the function downsample for several axes. """
+    """Test function downsample for several axes."""
     n_axes = np.random.randint(1, high=ndim, size=1)[0]
     axis = tuple(np.random.randint(0, high=ndim, size=n_axes))
     dims = np.random.randint(10, high=50, size=ndim)
@@ -99,7 +99,7 @@ def test_downsample_axes(ndim, factor):
 
 
 def test_downsample_offset():
-    """ This function checks downsample offset on 2x2 matrices. """
+    """Check downsample offset on 2x2 matrices."""
     x = np.array([[1, 0, 2, 0], [0, 0, 0, 0], [3, 0, 4, 0], [0, 0, 0, 0]])
     y = downsample(x, 2)
     z = np.array([[1, 2], [3, 4]])
@@ -117,7 +117,7 @@ def test_downsample_offset():
 @pytest.mark.parametrize("ndim", range(1, 4))
 @pytest.mark.parametrize("factor", range(1, 5))
 def test_upsample_axisnone(ndim, factor):
-    """ This function tests the function upsample for axis=None. """
+    """Test function upsample for axis=None."""
     dims = np.random.randint(10, high=50, size=ndim)
     x = np.random.randn(*dims)
     shape = tuple([d * factor for d in x.shape])
@@ -130,7 +130,7 @@ def test_upsample_axisnone(ndim, factor):
 @pytest.mark.parametrize("ndim", range(1, 4))
 @pytest.mark.parametrize("factor", range(1, 5))
 def test_upsample_axis(ndim, factor):
-    """ This function tests the function upsample for a specific axis. """
+    """Test function upsample for a specific axis."""
     axis = np.random.randint(0, high=ndim, size=1)[0]
     dims = np.random.randint(10, high=50, size=ndim)
     x = np.random.randn(*dims)
@@ -147,7 +147,7 @@ def test_upsample_axis(ndim, factor):
 @pytest.mark.parametrize("ndim", range(2, 5))
 @pytest.mark.parametrize("factor", range(1, 4))
 def test_upsample_axes(ndim, factor):
-    """ This function tests the function upsample for several axes. """
+    """Test function upsample for several axes."""
     n_axes = np.random.randint(1, high=ndim, size=1)[0]
     axis = tuple(np.random.randint(0, high=ndim, size=n_axes))
     dims = np.random.randint(10, high=50, size=ndim)
@@ -163,7 +163,7 @@ def test_upsample_axes(ndim, factor):
 
 
 def test_upsample_offset():
-    """ This function checks upsample offset on 2x2 matrices. """
+    """Check upsample offset on 2x2 matrices."""
     x = np.array([[1, 2], [3, 4]])
 
     y = upsample(x, 2)
@@ -183,7 +183,7 @@ def test_upsample_offset():
 @pytest.mark.parametrize("factor", range(1, 5))
 @pytest.mark.parametrize("offset", range(0, 3))
 def test_downsample_upsample(ndim, factor, offset):
-    """ This function checks that downsample(upsample()) is identity. """
+    """Check that downsample(upsample()) is identity."""
     dims = np.random.randint(3, high=9, size=ndim)
     x = np.random.randint(-10, high=10, size=dims)
     y_ = upsample(x, factor, offset=offset)
@@ -198,7 +198,7 @@ def test_downsample_upsample(ndim, factor, offset):
 @pytest.mark.parametrize("factor", range(1, 5))
 @pytest.mark.parametrize("offset", range(0, 3))
 def test_upsample_downsample(ndim, factor, offset):
-    """ This function checks that upsample(downsample()) have same dimensions. """
+    """Check that upsample(downsample()) have same dimensions."""
     dims = np.random.randint(3, high=9, size=ndim) * factor
     x = np.random.randint(-10, high=10, size=dims)
     y_ = downsample(x, factor, offset=offset)
@@ -210,14 +210,14 @@ def test_upsample_downsample(ndim, factor, offset):
 
 @pytest.mark.parametrize("axis", [2.3, None, "blabla", (1, 2)])
 def test_upiirdn_axis_errors(axis):
-    """ This function checks upiirdn errors for axis. """
+    """Check upiirdn errors for axis."""
     with pytest.raises((ValueError, TypeError)):
         upiirdn(None, None, axis=axis)
 
 
 @pytest.mark.parametrize("zero_phase", [True, False])
 def test_upiirdn(zero_phase):
-    """ This function checks upiirdn. """
+    """Check function upiirdn."""
     x = np.random.randn(100)
     up, down = 9, 15
     iir = dlti(*cheby1(8, 0.05, 0.8 * up / down, btype='lowpass'))

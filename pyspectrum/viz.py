@@ -1,4 +1,4 @@
-""" Functions for visualization. """
+"""Functions for visualization."""
 
 import numpy as np
 from scipy.fft import fft2, fftshift
@@ -6,7 +6,7 @@ from scipy.signal import welch
 
 
 def remove_ticks(ax):
-    """ Remove x and y ticks from axes. """
+    """Remove x and y ticks from axes."""
     for i in range(len(ax)):
         ax[i].set_xticks([])
         ax[i].set_yticks([])
@@ -14,7 +14,7 @@ def remove_ticks(ax):
 
 
 def plot_welch(ax, x, fs, nperseg, *, label=None, semilogy=True):
-    """ Plot spectrum obtained by Welch.
+    """Plot spectrum obtained by Welch.
 
     Parameters
     ----------
@@ -44,7 +44,7 @@ def plot_welch(ax, x, fs, nperseg, *, label=None, semilogy=True):
 
 
 def plot_spectrum2(ax, img):
-    """ Plot spectrum of 2D image.
+    """Plot spectrum of 2D image.
 
     Parameters
     ----------
