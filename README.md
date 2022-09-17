@@ -56,21 +56,9 @@ ie. a huge artifact peak at 80 Hz. This kind of downsampling can be present in q
 
 See `examples\downsample_ecg.py` for the complete analysis.
 
-#### Real-time SRC
+### Spectral peak detection
 
-Offline resampling can use non-causal processing like Fourier transform,
-or bilateral / forward-backward filters to provide zero-phase distortion.
-
-Online resampling is limited to causal processing, ie forward filters:
-FIR filters generating a delay but no phase distortion, or
-IIR filters generating no delay but a phase distortion.
-
-Real-time resampling requires the smallest delay, restricting usage to IIR
-filters.
-
-C++ libraries for real-time SRC:
-[DSPFilters](https://github.com/vinniefalco/DSPFilters)
-and [r8brain](https://github.com/avaneev/r8brain-free-src).
+WIP
 
 
 ## Installation
