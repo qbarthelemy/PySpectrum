@@ -37,7 +37,7 @@ ecg += 0.1 * np.cos(2 * np.pi * (2 * fp / fi) * np.arange(n_times))
 
 fig, ax = plt.subplots()
 fig.suptitle('Raw ECG', fontsize=12)
-ax = plot_welch(ax, ecg, fi, nperseg=2*fi)
+ax = plot_welch(ax, ecg, fi, nperseg=2*fi, ylabel="Power spectrum of the ECG")
 plt.show()
 
 # You can observe on the spectrum the powerline peak at 60 Hz.
@@ -56,7 +56,8 @@ src = fo / fi  # sample rate conversion
 ecg_re = resample(ecg, int(n_times * src))
 fig, ax = plt.subplots()
 fig.suptitle('ECG resampled in spectral domain', fontsize=12)
-ax = plot_welch(ax, ecg_re, fo, nperseg=2*fo)
+ax = plot_welch(ax, ecg_re, fo, nperseg=2*fo,
+                ylabel="Power spectrum of the ECG")
 plt.show()
 
 
@@ -92,6 +93,7 @@ ax = plot_welch(ax, ecg_fir, fo, nperseg=2*fo, label='FIR')
 ax = plot_welch(ax, ecg_firzp, fo, nperseg=2*fo, label='FIR zero-phase')
 ax = plot_welch(ax, ecg_iir, fo, nperseg=2*fo, label='IIR')
 ax = plot_welch(ax, ecg_iirzp, fo, nperseg=2*fo, label='IIR zero-phase')
+ax.set_ylabel("Power spectrum of the ECG")
 plt.legend(loc='lower left')
 plt.show()
 
@@ -110,7 +112,8 @@ if up == 1:  # only for non-fractional src
     fig, ax = plt.subplots()
     fig.suptitle('ECG resampled in time domain\nwithout anti-aliasing filter',
                  fontsize=12)
-    ax = plot_welch(ax, ecg_down, fo, nperseg=2*fo)
+    ax = plot_welch(ax, ecg_down, fo, nperseg=2*fo,
+                    ylabel="Power spectrum of the ECG")
     plt.show()
 
 # You can observe a huge artifact peak at 80 Hz.
@@ -120,7 +123,5 @@ if up == 1:  # only for non-fractional src
 # References
 # ----------
 # .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.misc.electrocardiogram.html
-#
 # .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html
-#
 # .. [3] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.decimate.html
