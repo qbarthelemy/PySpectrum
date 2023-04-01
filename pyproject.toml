@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyspectrum"
-version = "0.1.0"
+version = "0.2.0"
 description = "PySpectrum is a Python package for spectral analysis"
 authors = ["Quentin Barthelemy"]
 license = "BSD-3-Clause"
@@ -18,11 +18,13 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-numpy = "^1.16.5"
-scipy = "^1.6.0"
-Pillow = "^9.0.0"
-matplotlib = "^3.0.0"
+python = "^3.8"
+numpy = "^1.23.2"
+scipy = "^1.9.0"
+Pillow = "^9.2.0"
+statsmodels = "^0.13.2"
+matplotlib = "^3.5.0"
+mne = "^1.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"

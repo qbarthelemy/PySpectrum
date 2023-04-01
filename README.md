@@ -22,7 +22,7 @@ SRC can generate
 [Nyquist–Shannon sampling theorem](https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem)
 is not respected.
 
-This package implements several functions to complete the
+This module implements several functions to complete the
 [Signal processing module of SciPy](https://docs.scipy.org/doc/scipy/reference/signal.html#filtering):
 - `downsample` and `upsample` for multidimensional arrays,
 - `upiirdn` the [scipy.signal.upfirdn](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.upfirdn.html)
@@ -48,18 +48,41 @@ See `examples\downsample_img.py` for the complete analysis.
 
 #### Time series
 
-Time series of this example is an electrocardiogram (ECG) signal downsampled from 360 Hz to 180 Hz.
+Time series of this example is an electrocardiogram (ECG) signal,
+downsampled from 360 Hz to 180 Hz.
 Signal downsampled without anti-aliasing filter shows aliasing artifacts,
-ie. a huge artifact peak at 80 Hz. This kind of downsampling can be present in quickly coded drivers.
+ie. a huge artifact peak at 80 Hz.
+This kind of downsampling can be present in quickly coded drivers.
 
 ![](/doc/fig_downsample_ecg.png)
 
 See `examples\downsample_ecg.py` for the complete analysis.
 
-### Spectral peak detection
+### Spectral processing
 
-WIP
+This module implements several functions:
+- `rescale` to rescale spectra using a robust log-log linear regression,
+- `detect_peak` to detect peak on spectra following a power law.
 
+#### Spectral rescaling
+
+Many analyses require a normalization / standardization step of spectra,
+to remove inter-spectra variabilities.
+
+![](/doc/fig_rescale_spectra.png)
+
+See `examples\rescale_simulated.py` for the complete analysis.
+
+#### Alpha peak detection in EEG spectrum
+
+Automatic detection of alpha peak in the spectrum of an electroencephalogram
+(EEG), compared to peak finders provided by
+[SciPy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html)
+and [MNE-Python](https://mne.tools/stable/generated/mne.preprocessing.peak_finder.html).
+
+![](/doc/fig_find_peak_eeg.png)
+
+See `examples\find_peak_eeg.py` for the complete analysis.
 
 ## Installation
 
