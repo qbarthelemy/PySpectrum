@@ -3,8 +3,9 @@
 [![Code PythonVersion](https://img.shields.io/badge/python-3.7+-blue)](https://img.shields.io/badge/python-3.7+-blue)
 [![License](https://img.shields.io/badge/licence-BSD--3--Clause-green)](https://img.shields.io/badge/license-BSD--3--Clause-green)
 
-PySpectrum is a Python package for spectral analyses,
-looking at sampling rate conversion and its potential aliasing artifacts.
+PySpectrum is a Python package for spectral analyses:
+sampling rate conversion and its potential aliasing artifacts;
+spectral rescaling and spectral peak detection by robust log-log linear regression.
 
 PySpectrum is distributed under the open source 3-clause BSD license.
 
