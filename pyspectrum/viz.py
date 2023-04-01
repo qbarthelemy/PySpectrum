@@ -13,7 +13,7 @@ def remove_ticks(ax):
     return ax
 
 
-def plot_welch(ax, x, fs, nperseg, *, label=None, semilogy=True):
+def plot_welch(ax, x, fs, nperseg, *, label=None, ylabel=None, semilogy=True):
     """Plot spectrum obtained by Welch.
 
     Parameters
@@ -36,7 +36,8 @@ def plot_welch(ax, x, fs, nperseg, *, label=None, semilogy=True):
     if semilogy:
         ax.semilogy()
     ax.set_xlabel("Frequency in Hz")
-    ax.set_ylabel("Power spectrum of the ECG")
+    if ylabel:
+        ax.set_ylabel(ylabel)
     ax.set_xlim(f[[0, -1]])
     if label:
         ax.legend(loc='upper right')
