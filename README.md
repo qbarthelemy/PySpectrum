@@ -1,7 +1,7 @@
 # PySpectrum
 
-[![Code PythonVersion](https://img.shields.io/badge/python-3.8+-blue)](https://img.shields.io/badge/python-3.8+-blue)
-[![License](https://img.shields.io/badge/licence-BSD--3--Clause-green)](https://img.shields.io/badge/license-BSD--3--Clause-green)
+[![Code PythonVersion](https://img.shields.io/badge/python-3.11-blue)](https://img.shields.io/badge/python-3.11-blue)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](https://img.shields.io/badge/license-BSD--3--Clause-green)
 
 PySpectrum is a Python package for spectral analyses:
 - sampling rate conversion and its potential aliasing artifacts;
@@ -24,7 +24,7 @@ SRC can generate
 is not respected.
 
 This module implements several functions to complete the
-[Signal processing module of SciPy](https://docs.scipy.org/doc/scipy/reference/signal.html#filtering):
+[signal processing module of SciPy](https://docs.scipy.org/doc/scipy/reference/signal.html#filtering):
 - `downsample` and `upsample` for multidimensional arrays,
 - `upiirdn` the [scipy.signal.upfirdn](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.upfirdn.html)
 counterpart for IIR filtering, allowing **fractional** downsampling in sample domain contrary to

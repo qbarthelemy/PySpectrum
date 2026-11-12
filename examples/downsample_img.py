@@ -8,7 +8,7 @@ Spatial and spectral analyses of artifacts after downsampling of a 2D image.
 # Author: Quentin Barthélemy
 
 import numpy as np
-import scipy.misc as misc
+import scipy.datasets as datasets
 from matplotlib import pyplot as plt
 from PIL import Image
 
@@ -20,7 +20,7 @@ from pyspectrum.viz import plot_spectrum2, remove_ticks
 # Original image
 # --------------
 
-img = misc.ascent()
+img = datasets.ascent()
 
 
 ###############################################################################

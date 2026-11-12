@@ -8,8 +8,9 @@ Spectral analyses after downsampling of an electrocardiogram (ECG) time series.
 # Author: Quentin Barthélemy
 
 from fractions import Fraction
+
 import numpy as np
-from scipy.misc import electrocardiogram
+from scipy.datasets import electrocardiogram
 from scipy.signal import (
     resample, firwin, upfirdn, resample_poly, dlti, cheby1
 )
