@@ -9,6 +9,7 @@ Automatic detection of alpha peak in the spectrum of an electroencephalogram
 # Author: Quentin Barthélemy
 
 import os
+
 import numpy as np
 from mne.datasets import sample
 from mne.io import read_raw_fif

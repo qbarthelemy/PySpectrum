@@ -61,6 +61,6 @@ def plot_spectrum2(ax, img):
     """
     dft = fft2(img)
     dft_shift = fftshift(dft)
-    mag = 20 * np.log(np.abs(dft_shift))
+    mag = 20 * np.log10(np.abs(dft_shift))
     ax.imshow(mag, cmap='gray')
     return ax

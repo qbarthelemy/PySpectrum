@@ -5,6 +5,7 @@ To execute tests:
 """
 
 import pytest
+
 from pyspectrum.simulation import (
     spectrum_noise_pink, spectrum_eeg, signal_noise_pink
 )
