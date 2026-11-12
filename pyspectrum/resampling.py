@@ -3,6 +3,7 @@
 import numbers
 
 import numpy as np
+from numpy.lib.array_utils import normalize_axis_tuple
 from scipy.signal import lfilter, filtfilt
 
 
@@ -17,20 +18,19 @@ def _check_args(factor, offset):
 
 
 def _check_axis(x, axis):
-    """This function checks axis and return axis in tuple format."""
+    """This function checks axis and return axis in tuple format.
+
+    Negative axes are converted to positive ones, and repeated or
+    out-of-bounds axes raise a ValueError.
+    """
     if axis is None:
-        axis = tuple(range(x.ndim))
-    else:
-        if isinstance(axis, numbers.Integral):
-            axis = (axis,)
-        if isinstance(axis, tuple):
-            if max(axis) >= x.ndim:
-                raise ValueError(
-                    'Parameter axis higher than the number of dimensions of x')
-        else:
-            raise ValueError(
-                'Parameter axis must be None, int or tuple of int')
-    return axis
+        return tuple(range(x.ndim))
+    if isinstance(axis, numbers.Integral):
+        axis = (axis,)
+    if not (isinstance(axis, tuple)
+            and all(isinstance(a, numbers.Integral) for a in axis)):
+        raise ValueError('Parameter axis must be None, int or tuple of int')
+    return normalize_axis_tuple(axis, x.ndim, argname='axis')
 
 
 def downsample(x, factor, *, offset=0, axis=None):
@@ -49,7 +49,7 @@ def downsample(x, factor, *, offset=0, axis=None):
         Downsampling factor, strictly positive.
 
     offset : integer, default 0
-        Offset for sampling.
+        Offset for sampling, circular.
 
     axis : None | int | tuple of int, default None
         Axis or axes along which to downsample.
@@ -141,7 +141,7 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
     x : array_like
         Array to resample.
 
-    iir : dlti object
+    iir : TransferFunction
         One-dimensional IIR (infinite-impulse response) filter [2]_.
 
     up : int, default 1
@@ -165,12 +165,12 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
     References
     ----------
     .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.upfirdn.html
-    .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.dlti.html
+    .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.TransferFunction.html
     """
     if axis != int(axis):
         raise ValueError('Parameter axis must be an integer')
 
-    x = upsample(x, up, axis=axis) * up  # to keep the signal power
+    x = upsample(x, up, axis=axis) * up  # to keep the signal amplitude
 
     if zero_phase:
         x = filtfilt(iir.num, iir.den, x, axis=axis)
