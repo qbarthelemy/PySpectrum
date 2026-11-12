@@ -6,6 +6,7 @@ To execute tests:
 
 import pytest
 import numpy as np
+
 from pyspectrum.spectral import rescale, detect_peak
 
 
@@ -19,7 +20,7 @@ def generate_pure_1f_curve(fs, size, a, b):
     return spec, freqs
 
 
-def generate_noisy_1f_curve(size, fs, a, b, n, seed):
+def generate_noisy_1f_curve(fs, size, a, b, n, seed):
     """Generate a noisy 1/f curve"""
     np.random.seed(seed)
     freqs = np.fft.rfftfreq(size, 1/fs)
@@ -32,8 +33,13 @@ def generate_noisy_1f_curve(size, fs, a, b, n, seed):
     return spec, freqs
 
 
-def generate_peaky_1f_curve(size, fs, a, b, n, peak_low, peak_high, seed):
-    """Generate a peaky 1/f curve"""
+def generate_peaky_1f_curve(fs, size, a, b, n, peak_low, peak_high, seed,
+                            peak_width=0.1):
+    """Generate a peaky 1/f curve
+
+    The peak is a Gaussian centered on (peak_low+peak_high)/2, with standard
+    deviation 1/sqrt(2*peak_width) Hz.
+    """
     np.random.seed(seed)
     freqs = np.fft.rfftfreq(size, 1/fs)
 
@@ -41,7 +47,7 @@ def generate_peaky_1f_curve(size, fs, a, b, n, peak_low, peak_high, seed):
     with np.errstate(divide='ignore'):
         spec = np.power(freqs, a)[np.newaxis, :] * np.exp(b)
     spec += n * np.random.normal(0, 1, size=spec.shape)
-    spec += 20.0 * np.exp(-0.1*(freqs-0.5*(peak_low+peak_high))**2)
+    spec += 20.0 * np.exp(-peak_width*(freqs-0.5*(peak_low+peak_high))**2)
     spec[:, np.isclose(freqs, 50, atol=freqs[1]-freqs[0])] *= 10
     spec = np.clip(spec, a_min=1e-2, a_max=None)  # avoid negative values
     return spec, freqs
@@ -117,8 +123,8 @@ def test_rescale_noisy(fs, size, coeff_a, coeff_b, coeff_noise, rescaling):
 def test_rescale_peaky(fs, size, coeff_a, coeff_b, coeff_noise, peak_low, peak_high, rescaling):
     """Test rescale on a peaky and noisy 1/f curve"""
     spectrum, freqs = generate_peaky_1f_curve(
-        size,
         fs,
+        size,
         coeff_a,
         coeff_b,
         coeff_noise,
@@ -162,8 +168,8 @@ def test_rescale_doc(fs, size, coeff_a, coeff_b, coeff_noise, peak_low, peak_hig
         to show equivalence between indexing method (see documentation)
     """
     spectrum, freqs = generate_peaky_1f_curve(
-        size,
         fs,
+        size,
         coeff_a,
         coeff_b,
         coeff_noise,
@@ -196,8 +202,8 @@ def test_rescale_doc(fs, size, coeff_a, coeff_b, coeff_noise, peak_low, peak_hig
 def test_detect_peak_noisy(fs, size, coeff_a, coeff_b, coeff_noise):
     """Test detect_peak on a noisy 1/f curve"""
     spectrum, freqs = generate_noisy_1f_curve(
-        size,
         fs,
+        size,
         coeff_a,
         coeff_b,
         coeff_noise,
@@ -225,14 +231,15 @@ def test_detect_peak_noisy(fs, size, coeff_a, coeff_b, coeff_noise):
 def test_detect_peak_peaky(fs, size, coeff_a, coeff_b, coeff_noise, peak_low, peak_high):
     """Test detect_peak on a peaky and noisy 1/f curve"""
     spectrum, freqs = generate_peaky_1f_curve(
-        size,
         fs,
+        size,
         coeff_a,
         coeff_b,
         coeff_noise,
         peak_low,
         peak_high,
         1234,
+        peak_width=0.5,  # sigma=1Hz: narrow enough to emerge from the noise
     )
 
     peak_freqs = detect_peak(
@@ -241,5 +248,23 @@ def test_detect_peak_peaky(fs, size, coeff_a, coeff_b, coeff_noise, peak_low, pe
         band_target=(peak_low, peak_high),
     )
 
-    assert np.allclose(peak_freqs, (peak_low+peak_high)/2,
-                       rtol=freqs[1] - freqs[0])
+    # detected peak must be within one frequency bin of the true peak
+    np.testing.assert_allclose(
+        peak_freqs,
+        (peak_low+peak_high)/2,
+        rtol=0,
+        atol=freqs[1] - freqs[0],
+        err_msg='Detected peak too far from the true peak frequency.',
+    )
+
+
+def test_detect_peak_nopeak():
+    """Test detect_peak with freqs=None, on a spectrum without peak."""
+    rng = np.random.default_rng(42)
+    n_freqs = 129
+    freqs = np.arange(n_freqs)
+    spectrum = np.r_[1, 1 / freqs[1:]] * np.exp(rng.normal(0, 0.01, n_freqs))
+    spectrum[(freqs >= 8) & (freqs < 12)] *= 0.5  # dip, not peak, in target band
+    peaks = detect_peak(spectrum)
+    assert peaks.dtype == float
+    assert np.all(np.isnan(peaks))

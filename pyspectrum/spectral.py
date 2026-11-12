@@ -7,15 +7,16 @@ import statsmodels.api as sm
 def _check_freqs(freqs, n_freqs):
     """This function checks freqs."""
     if freqs is None:
-        freqs = np.arange(n_freqs)
+        freqs = np.arange(n_freqs, dtype=float)
     else:
-        freqs = np.asarray(freqs)
+        freqs = np.asarray(freqs, dtype=float)
         if freqs.shape != (n_freqs,):
             raise ValueError(
                 'freqs does not have the same dimension of the frequency axis.'
-                ' Should be %d but got %d.' % (n_freqs, freqs.shape[0]))
+                ' Should be %d but got %d.' % (n_freqs, freqs.shape[0])
+            )
         if np.any(freqs < 0):
-            raise ValueError('freqs must be strictly positive')
+            raise ValueError('freqs must be positive')
 
     return freqs
 
@@ -54,7 +55,7 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
         Matrix array containing spectra, with the first dimension representing
         the channels, and the second dimension representing the frequencies.
 
-    freqs : None | ndarray, shape (n_freqs,), default None
+    freqs : None | ndarray, shape (n_freqs,)
         Vector array of size `n_freqs` and containing (positive) frequencies
         abscissa of the spectrum.
         If `freqs` is None, it is assumed that frequencies are
@@ -119,7 +120,7 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
 
     x = np.atleast_2d(np.asarray(x))
     n_channels, n_freqs = x.shape
-    x_r = np.zeros_like(x)
+    x_r = np.zeros_like(x, dtype=float)
     freqs = _check_freqs(freqs, n_freqs)
 
     if foi is not None:
@@ -237,67 +238,7 @@ def detect_peak(x, freqs=None, *, band=(1, 95), band_target=(8, 12),
     # detect peak, comparing the residuals at peaks to HuberT bounds
     logx_scaled_resids = logx_resids / resids_mad[:, np.newaxis]
     for c in range(logx_scaled_resids.shape[0]):
-        if np.abs(logx_scaled_resids[c, peak_inds[c]]) < huber_t:
+        if logx_scaled_resids[c, peak_inds[c]] < huber_t:
             peaks[c] = np.nan
 
     return peaks
-
-
-def generate_sig_noise_pink(n_channels, n_samples, fs):
-    """Generate signal of pink noise.
-
-    Generate a signal of pink noise, with a spectrum in 1/f.
-
-    Parameters
-    ----------
-    n_channels : int
-        Number of channels to generate.
-
-    n_samples : int
-        Number of samples to generate.
-
-    fs : int
-        Sampling frequency of the signal to generate, in Hz.
-
-    Returns
-    -------
-    pink_noise : ndarray, shape (n_channels, n_samples)
-        Signal of pink noise.
-    """
-
-    noise_pink = np.zeros((n_channels, n_samples))
-    spectrum, _ = _pink(n_channels, n_samples, fs)
-
-    for i_channel in range(n_channels):
-        # transform from frequencies to time, dropping complex part that
-        # may not be zero due to numerical errors
-        noise_pink[i_channel] = np.fft.irfft(spectrum[i_channel]).real
-
-    return noise_pink
-
-
-def _pink(n_channels, n_samples, fs):
-    """Generate complex spectrum of pink noise."""
-    freqs = np.fft.rfftfreq(n_samples, 1/fs)
-    spectrum = np.zeros((n_channels, len(freqs)), dtype=np.complex128)
-    spec = np.empty_like(freqs, dtype=np.complex128)
-
-    for i_channel in range(n_channels):
-        # assume amplitude of spectrum is inversely proportional to frequency
-        spec[1:] = 1 / (freqs[1:])
-        spec[0] = spec[1]
-        # add random noise
-        spec += np.random.uniform(low=0, high=0.1, size=spec.shape)
-        # amplify
-        spec *= 5e3
-        # define a random phase for each frequency
-        phase = np.random.uniform(low=0, high=2*np.pi, size=spec.shape)
-        # convert power to a random complex
-        spec = spec * np.exp(1j*phase)
-        # zero and Nyquist bins should not have an imaginary part
-        spec[0] = spec[0].real
-        if n_samples % 2 == 0:  # even case
-            spec[-1] = spec[-1].real
-        spectrum[i_channel] = spec
-
-    return spectrum, freqs
