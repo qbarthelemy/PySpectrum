@@ -45,7 +45,7 @@ degrading performances in terms of
 
 ![](/doc/fig_downsample_img.png)
 
-See `examples\downsample_img.py` for the complete analysis.
+See `examples/downsample_img.py` for the complete analysis.
 
 #### Time series
 
@@ -57,7 +57,7 @@ This kind of downsampling can be present in quickly coded drivers.
 
 ![](/doc/fig_downsample_ecg.png)
 
-See `examples\downsample_ecg.py` for the complete analysis.
+See `examples/downsample_ecg.py` for the complete analysis.
 
 ### Spectral processing
 
@@ -70,9 +70,13 @@ This module implements several functions:
 Many analyses require a normalization / standardization step of spectra,
 to remove inter-spectra variabilities.
 
-![](/doc/fig_rescale_spectra.png)
+![](/doc/fig_rescale_normalization.png)
 
-See `examples\rescale_simulated.py` for the complete analysis.
+Then, we can perform a robust log-log linear regression on spectra.
+
+![](/doc/fig_rescale_regression.png)
+
+See `examples/rescale_simulated.py` for the complete analysis.
 
 #### Alpha peak detection in EEG spectrum
 
@@ -83,7 +87,7 @@ and [MNE-Python](https://mne.tools/stable/generated/mne.preprocessing.peak_finde
 
 ![](/doc/fig_find_peak_eeg.png)
 
-See `examples\find_peak_eeg.py` for the complete analysis.
+See `examples/find_peak_eeg.py` for the complete analysis.
 
 ## Installation
 
