@@ -6,7 +6,7 @@ To execute tests:
 
 import pytest
 import numpy as np
-from scipy.signal import dlti, cheby1
+from scipy.signal import dlti, lti, cheby1
 
 from pyspectrum.resampling import downsample, upsample, upiirdn
 
@@ -332,3 +332,25 @@ def test_upiirdn_axis(axis, zero_phase):
         upiirdn(xi, iir, up=up, down=down, zero_phase=zero_phase) for xi in x_
     ])
     np.testing.assert_allclose(np.moveaxis(y, axis, -1), y_ref, atol=1e-10)
+
+
+@pytest.mark.parametrize("zero_phase", [True, False])
+def test_upiirdn_dlti_representations(zero_phase):
+    """Check upiirdn gives same output for tf, zpk and ss representations."""
+    up, down = 2, 3
+    x = np.random.randn(500)
+    iir_tf = _lowpass(up, down)
+    y_tf = upiirdn(x, iir_tf, up=up, down=down, zero_phase=zero_phase)
+    for iir in [iir_tf.to_zpk(), iir_tf.to_ss()]:
+        y = upiirdn(x, iir, up=up, down=down, zero_phase=zero_phase)
+        np.testing.assert_allclose(
+            y, y_tf, rtol=1e-6, atol=1e-8,
+            err_msg=f'Output differs for {type(iir).__name__}.',
+        )
+
+
+@pytest.mark.parametrize("iir", [None, lti([1.], [1., 1.]), ([1.], [1.])])
+def test_upiirdn_iir_errors(iir):
+    """Check upiirdn raises TypeError if iir is not a discrete-time dlti."""
+    with pytest.raises(TypeError):
+        upiirdn(np.random.randn(10), iir)

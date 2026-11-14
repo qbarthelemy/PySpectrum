@@ -46,9 +46,9 @@ def spectrum_noise_pink(n_channels, n_freqs, fs):
         # convert power to a random complex
         spec = spec * np.exp(1j*phase)
         # zero and Nyquist bins should not have an imaginary part
+        # the implicit signal length 2*(n_freqs-1) is always even
         spec[0] = spec[0].real
-        if n_freqs % 2 == 0:  # even case
-            spec[-1] = spec[-1].real
+        spec[-1] = spec[-1].real
         spectrum[c] = spec
 
     return spectrum, freqs
@@ -105,9 +105,9 @@ def spectrum_eeg(n_channels, n_freqs, fs):
         # convert power to a random complex
         spec = spec * np.exp(1j*phase)
         # zero and Nyquist bins should not have an imaginary part
+        # the implicit signal length 2*(n_freqs-1) is always even
         spec[0] = spec[0].real
-        if n_freqs % 2 == 0: # even case
-            spec[-1] = spec[-1].real
+        spec[-1] = spec[-1].real
         spectrum[c] = spec
 
     return spectrum, freqs

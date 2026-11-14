@@ -4,7 +4,7 @@ import numbers
 
 import numpy as np
 from numpy.lib.array_utils import normalize_axis_tuple
-from scipy.signal import lfilter, filtfilt
+from scipy.signal import dlti, lfilter, filtfilt
 
 
 def _check_args(factor, offset):
@@ -96,7 +96,7 @@ def upsample(x, factor, *, offset=0, axis=None):
         Upsampling factor, strictly positive.
 
     offset : integer, default 0
-        Offset for sampling.
+        Offset for sampling, circular.
 
     axis : None | int | tuple of int, default None
         Axis or axes along which to upsample.
@@ -141,8 +141,10 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
     x : array_like
         Array to resample.
 
-    iir : TransferFunction
-        One-dimensional IIR (infinite-impulse response) filter [2]_.
+    iir : dlti
+        One-dimensional discrete-time IIR (infinite-impulse response) filter
+        [2]_, in any representation: transfer function, zeros-poles-gain or
+        state-space.
 
     up : int, default 1
         Upsampling factor.
@@ -165,17 +167,20 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
     References
     ----------
     .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.upfirdn.html
-    .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.TransferFunction.html
+    .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.dlti.html
     """
     if axis != int(axis):
         raise ValueError('Parameter axis must be an integer')
+    if not isinstance(iir, dlti):
+        raise TypeError('Parameter iir must be a discrete-time dlti object')
+    tf = iir.to_tf()  # convert zeros-poles-gain or state-space representation
 
     x = upsample(x, up, axis=axis) * up  # to keep the signal amplitude
 
     if zero_phase:
-        x = filtfilt(iir.num, iir.den, x, axis=axis)
+        x = filtfilt(tf.num, tf.den, x, axis=axis)
     else:
-        x = lfilter(iir.num, iir.den, x, axis=axis)
+        x = lfilter(tf.num, tf.den, x, axis=axis)
 
     x = downsample(x, down, axis=axis)
 
