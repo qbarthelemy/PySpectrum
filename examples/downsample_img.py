@@ -34,7 +34,7 @@ factor = 4
 height, width = img.shape
 img_r = np.array(
     Image.fromarray(img).resize(
-        (height // factor, width // factor),
+        (width // factor, height // factor),
         resample=Image.HAMMING
     )
 )

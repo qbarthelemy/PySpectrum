@@ -28,7 +28,7 @@ raw_fname = os.path.join(
     sample.data_path(), 'MEG', 'sample', 'sample_audvis_raw.fif'
 )
 raw = read_raw_fif(raw_fname, preload=True, verbose=False)
-raw.pick_types(meg=False, eeg=True)
+raw.pick("eeg")
 fs = int(raw.info['sfreq'])  # 600 Hz
 
 
@@ -43,14 +43,19 @@ freqs, spectrum = welch(eeg, fs=fs, nperseg=fs, noverlap=0.1*fs)
 
 band_low, band_high = 8, 12
 foi = ((freqs >= band_low) & (freqs < band_high))
-freq_off = np.where(freqs == band_low)
+idx_off = np.flatnonzero(foi)[0]  # index of the first frequency of the band
 
-peak_sp, _ = find_peaks(spectrum[foi])
-peak_mne, _ = peak_finder(spectrum[foi], verbose=False)
+# SciPy and MNE return indices relative to the band: shift them to be
+# indices of the whole spectrum
+idx_sp, _ = find_peaks(spectrum[foi])
+idx_sp = idx_sp + idx_off
+idx_mne, _ = peak_finder(spectrum[foi], verbose=False)
+idx_mne = np.asarray(idx_mne, dtype=int) + idx_off
+
+# PySpectrum returns the frequency of the peak, NaN if no peak is found
 peak_ps = detect_peak(spectrum, freqs=freqs, band_target=(band_low, band_high))
-
-for i, p in enumerate(peak_mne):
-    peak_mne[i] = p + freq_off
+peak_ps = peak_ps[~np.isnan(peak_ps)]
+idx_ps = np.searchsorted(freqs, peak_ps)
 
 
 ###############################################################################
@@ -60,9 +65,11 @@ for i, p in enumerate(peak_mne):
 fig, ax = plt.subplots()
 fig.suptitle('Comparison of peak finders', fontsize=12)
 ax.plot(freqs, spectrum)
-ax.scatter(peak_sp, spectrum[peak_sp], c='C1', s=50, marker='v', label='SciPy')
-ax.scatter(peak_mne, spectrum[peak_mne], c='C2', s=50, marker='o', label='MNE')
-ax.scatter(peak_ps, spectrum[(freqs==peak_ps)], c='C3', s=60, marker='x',
+ax.scatter(freqs[idx_sp], spectrum[idx_sp], c='C1', s=50, marker='v',
+           label='SciPy')
+ax.scatter(freqs[idx_mne], spectrum[idx_mne], c='C2', s=50, marker='o',
+           label='MNE')
+ax.scatter(freqs[idx_ps], spectrum[idx_ps], c='C3', s=60, marker='x',
            label='PySpectrum')
 ax.set_xlim(0, 30)
 ax.set_xlabel("Frequency in Hz")

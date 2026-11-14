@@ -45,7 +45,6 @@ spectra_complete, lr_logcoeffs = rescale(
     foi=foi
 )
 
-
 # exclusion of 0Hz, to avoid to compute log(0)
 spectra_, freqs_ = spectra[:, 1:], freqs[1:]
 logfreqs = np.log(freqs_)
@@ -64,10 +63,10 @@ for c in range(n_channels):
     ax[c, 0].plot(freqs_, np.exp(y_pred[c]))
     ax[c, 0].set_ylabel("Channel " + str(c + 1))
     ax[c, 1].loglog(freqs_, spectra_[c])
-    ax[c, 1].loglog(freqs_, np.exp(y_pred[c]), 'o')
-    ax[c, 2].fill_between(freqs_, -3*huber_t, 3*huber_t, color='r', alpha=0.25)
-    ax[c, 2].fill_between(freqs_, -huber_t, huber_t, color='g', alpha=0.25)
-    ax[c, 2].semilogx(freqs_, res_scaled[c], 'o')
+    ax[c, 1].loglog(freqs_, np.exp(y_pred[c]))
+    ax[c, 2].fill_between(freqs_, 0, 3*huber_t, color='r', alpha=0.25)
+    ax[c, 2].fill_between(freqs_, 0, huber_t, color='g', alpha=0.25)
+    ax[c, 2].semilogx(freqs_, res_scaled[c], color='k')
 ax[0, 0].set_title('Plot raw')
 ax[0, 1].set_title('Plot log-log')
 ax[0, 2].set_title('Residuals log-log')

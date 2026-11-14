@@ -81,7 +81,7 @@ ecg_fir = upfirdn(fir, ecg, up=up, down=down)
 ecg_firzp = resample_poly(ecg, up, down, window=fir)
 
 # IIR filters
-iir = dlti(*cheby1(8, 0.05, 0.8 * src, btype='lowpass'))
+iir = dlti(*cheby1(8, 0.05, 0.8 / max(up, down), btype='lowpass'))
 # Upsampling, low pass IIR filtering, and downsampling
 ecg_iir = upiirdn(ecg, iir, up=up, down=down, zero_phase=False)
 # Upsampling, zero-phase low pass IIR filtering, and downsampling
@@ -123,6 +123,6 @@ if up == 1:  # only for non-fractional src
 ###############################################################################
 # References
 # ----------
-# .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.misc.electrocardiogram.html
+# .. [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.datasets.electrocardiogram.html
 # .. [2] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample.html
 # .. [3] https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.decimate.html
