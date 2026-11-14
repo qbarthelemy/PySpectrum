@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyspectrum"
-version = "0.2.0"
+version = "0.3.0"
 description = "PySpectrum is a Python package for spectral analysis"
 authors = ["Quentin Barthelemy"]
 license = "BSD-3-Clause"
