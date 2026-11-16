@@ -20,10 +20,16 @@ def plot_welch(ax, x, fs, nperseg, *, label=None, ylabel=None, semilogy=True):
     ----------
     ax : matplotlib axis
         Axis of figure.
+
     x : ndarray, shape (n_times,)
         Signal.
+
     fs : float
         Sampling frequency.
+
+    nperseg : int
+        Length of each segment to estimate power spectral density using Welch's
+        method.
 
     Returns
     -------
@@ -44,14 +50,15 @@ def plot_welch(ax, x, fs, nperseg, *, label=None, ylabel=None, semilogy=True):
     return ax
 
 
-def plot_spectrum2(ax, img):
+def plot_spectrum2(ax, x):
     """Plot spectrum of 2D image.
 
     Parameters
     ----------
     ax : matplotlib axis
         Axis of figure.
-    img : ndarray, shape (n_height, n_width)
+
+    x : ndarray, shape (n_height, n_width)
         2D image.
 
     Returns
@@ -59,7 +66,7 @@ def plot_spectrum2(ax, img):
     ax : matplotlib axis
         Axis of figure.
     """
-    dft = fft2(img)
+    dft = fft2(x)
     dft_shift = fftshift(dft)
     mag = 20 * np.log10(np.abs(dft_shift))
     ax.imshow(mag, cmap='gray')

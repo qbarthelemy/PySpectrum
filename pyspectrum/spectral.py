@@ -13,7 +13,7 @@ def _check_freqs(freqs, n_freqs):
         if freqs.shape != (n_freqs,):
             raise ValueError(
                 'freqs does not have the same dimension of the frequency axis.'
-                ' Should be %d but got %d.' % (n_freqs, freqs.shape[0])
+                f' Should be {n_freqs} but got {freqs.shape}.'
             )
         if np.any(freqs < 0):
             raise ValueError('freqs must be positive')
@@ -24,8 +24,8 @@ def _check_freqs(freqs, n_freqs):
 def rescale(x, freqs, *, rescaling='complete', foi=None):
     r"""Rescale spectra using a robust log-log linear regression.
 
-    1. Robust linear regression [1]_ of log spectra `x` as a function of log
-    frequency `freqs`:
+    1. Robust linear regression [1]_ of log spectra ``x`` as a function of log
+    frequency ``freqs``:
 
     On log-log spectra:
 
@@ -37,17 +37,17 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
 
     2. Rescaling of spectra:
 
-    - `complete`, using the y-intercept and slope:
+    - ``complete``, using the y-intercept and slope:
 
-    .. math:: x = (x / e^b)^{-1/a}
+      .. math:: x = (x / e^b)^{-1/a}
 
-    - `y-intercept`, using the y-intercept:
+    - ``y-intercept``, using the y-intercept:
 
-    .. math:: x = x / e^b
+      .. math:: x = x / e^b
 
-    - `slope`, using the slope:
+    - ``slope``, using the slope:
 
-    .. math:: x = x^{-1/a}
+      .. math:: x = x^{-1/a}
 
     Parameters
     ----------
@@ -56,19 +56,19 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
         the channels, and the second dimension representing the frequencies.
 
     freqs : None | ndarray, shape (n_freqs,)
-        Vector array of size `n_freqs` and containing (positive) frequencies
+        Vector array of size ``n_freqs`` and containing (positive) frequencies
         abscissa of the spectrum.
-        If `freqs` is None, it is assumed that frequencies are
-        `[0, 1, ... n_freqs-1]`.
+        If ``freqs`` is None, it is assumed that frequencies are
+        ``[0, 1, ... n_freqs-1]``.
 
-    rescaling : {'complete', 'y-intercept', 'slope'}, default 'complete'
+    rescaling : {'complete', 'y-intercept', 'slope'}, default='complete'
         Type of spectral rescaling, see above.
 
-    foi : None | array_like, default None
+    foi : None | array_like, default=None
         Frequencies of interest (advanced indexing by integers or booleans) for
         the regression, to exclude disturbing frequencies, like DC offset,
         alpha peak, or high frequencies.
-        If `foi` is None, the rescaling considers all strictly positive
+        If ``foi`` is None, the rescaling considers all strictly positive
         frequencies.
 
     Returns
@@ -77,8 +77,9 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
         Rescaled spectra.
 
     logcoeffs : ndarray, shape (n_channels, 2)
-        Coefficients `a` and `b` of the log-log linear regression, with the
-        slopes `a` in the first column and y-intercepts `b` in the second one.
+        Coefficients ``a`` and ``b`` of the log-log linear regression, with the
+        slopes ``a`` in the first column and y-intercepts ``b`` in the second
+        one.
 
     References
     ----------
@@ -87,7 +88,7 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
     Examples
     -------
 
-    Let `eeg` be a matrix of 10 seconds of random pink noise on 8 channels
+    Let ``eeg`` be a matrix of 10 seconds of random pink noise on 8 channels
     and 512 Hz sampling frequency:
 
     >>> import numpy as np
@@ -97,7 +98,7 @@ def rescale(x, freqs, *, rescaling='complete', foi=None):
     >>> frequency_resolution = fs / n_samples  # 0.1 Hz
     >>> eeg = signal_noise_pink(n_channels, n_samples, fs)
 
-    Let `X` be the power spectra of `eeg`, and `freqs` the associated
+    Let ``X`` be the power spectra of ``eeg``, and ``freqs`` the associated
     frequencies. Note that since this takes 5120 samples, there are 2560+1
     frequencies:
 
@@ -175,22 +176,22 @@ def detect_peak(x, freqs=None, *, band=(1, 95), band_target=(8, 12),
         Array containing spectra, with the first dimension representing the
         channels, and the second dimension representing the frequencies.
 
-    freqs : None | ndarray, shape (n_freqs,), default None
-        Vector of size `n_freqs` and containing (positive) frequencies
+    freqs : None | ndarray, shape (n_freqs,), default=None
+        Vector of size ``n_freqs`` and containing (positive) frequencies
         abscissa of the spectrum.
-        If `freqs` is None, it is assumed that frequencies are
-        `[0, 1, ... n_freqs-1]`.
+        If ``freqs`` is None, it is assumed that frequencies are
+        ``[0, 1, ... n_freqs-1]``.
 
-    band : tuple, default (1, 95)
+    band : tuple, default=(1, 95)
         Low and high frequencies (in Hz) of the spectral band where the linear
         regression is applied.
 
-    band_target : tuple, default (8, 12)
+    band_target : tuple, default=(8, 12)
         Low and high frequencies (in Hz) of the spectral band where the peak
         is searched.
 
-    huber_t : float, default 1.345
-        The tuning constant for Huber’s t function [1]_, to estimate bounds to
+    huber_t : float, default=1.345
+        The tuning constant for Huber's t function [1]_, to estimate bounds to
         detect if there is a peak.
 
     Returns

@@ -7,8 +7,6 @@ Spectral analyses after downsampling of an electrocardiogram (ECG) time series.
 """
 # Author: Quentin Barthélemy
 
-from fractions import Fraction
-
 import numpy as np
 from scipy.datasets import electrocardiogram
 from scipy.signal import (
@@ -16,7 +14,7 @@ from scipy.signal import (
 )
 from matplotlib import pyplot as plt
 
-from pyspectrum.resampling import upiirdn
+from pyspectrum.resampling import get_src, upiirdn
 from pyspectrum.viz import plot_welch
 
 
@@ -38,7 +36,7 @@ ecg += 0.1 * np.cos(2 * np.pi * (2 * fp / fi) * np.arange(n_times))
 
 fig, ax = plt.subplots()
 fig.suptitle('Raw ECG', fontsize=12)
-ax = plot_welch(ax, ecg, fi, nperseg=2*fi, ylabel="Power spectrum of the ECG")
+ax = plot_welch(ax, ecg, fi, nperseg=2*fi, ylabel='Power spectrum of the ECG')
 plt.show()
 
 # You can observe on the spectrum the powerline peak at 60 Hz.
@@ -51,14 +49,14 @@ plt.show()
 # ECG is resampled from 360 Hz to 180 Hz, using Fourier method in spectral
 # domain [2]_.
 
-fo = 180       # output sampling frequency
-src = fo / fi  # sample rate conversion
+fo = 180  # output sampling frequency
+src, up, down = get_src(fi, fo)
 
 ecg_re = resample(ecg, int(n_times * src))
 fig, ax = plt.subplots()
 fig.suptitle('ECG resampled in spectral domain', fontsize=12)
 ax = plot_welch(ax, ecg_re, fo, nperseg=2*fo,
-                ylabel="Power spectrum of the ECG")
+                ylabel='Power spectrum of the ECG')
 plt.show()
 
 
@@ -67,11 +65,8 @@ plt.show()
 # ----------------------------
 #
 # ECG is resampled from 360 Hz to 180 Hz, in time domain.
-# Note that `scipy.signal.decimate` is valid only for a non-fractional
+# Note that ``scipy.signal.decimate`` is valid only for a non-fractional
 # resampling [3]_.
-
-frac = Fraction(fo, fi)  # useful for fractional src
-up, down = frac.numerator, frac.denominator
 
 # FIR filters
 fir = firwin(int(20 / src) + 1, src, window='hamming')
@@ -94,7 +89,7 @@ ax = plot_welch(ax, ecg_fir, fo, nperseg=2*fo, label='FIR')
 ax = plot_welch(ax, ecg_firzp, fo, nperseg=2*fo, label='FIR zero-phase')
 ax = plot_welch(ax, ecg_iir, fo, nperseg=2*fo, label='IIR')
 ax = plot_welch(ax, ecg_iirzp, fo, nperseg=2*fo, label='IIR zero-phase')
-ax.set_ylabel("Power spectrum of the ECG")
+ax.set_ylabel('Power spectrum of the ECG')
 plt.legend(loc='lower left')
 plt.show()
 
@@ -114,7 +109,7 @@ if up == 1:  # only for non-fractional src
     fig.suptitle('ECG resampled in time domain\nwithout anti-aliasing filter',
                  fontsize=12)
     ax = plot_welch(ax, ecg_down, fo, nperseg=2*fo,
-                    ylabel="Power spectrum of the ECG")
+                    ylabel='Power spectrum of the ECG')
     plt.show()
 
 # You can observe a huge artifact peak at 80 Hz.

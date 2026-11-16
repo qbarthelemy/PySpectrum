@@ -1,5 +1,6 @@
 """Functions for sample-rate conversion of multidimensional arrays."""
 
+from fractions import Fraction
 import numbers
 
 import numpy as np
@@ -33,6 +34,34 @@ def _check_axis(x, axis):
     return normalize_axis_tuple(axis, x.ndim, argname='axis')
 
 
+def get_src(fi, fo):
+    """Compute quantities useful for sample rate conversion.
+
+    Parameters
+    ----------
+    fi : int
+        Input sampling frequency.
+
+    fo : int
+        Output sampling frequency.
+
+    Returns
+    -------
+    src : float
+        Sample rate conversion.
+
+    up : int
+        Upsampling factor.
+
+    down : int
+        Downsampling factor.
+    """
+    src = fo / fi
+    frac = Fraction(fo, fi)  # useful for fractional src
+    up, down = frac.numerator, frac.denominator
+    return src, up, down
+
+
 def downsample(x, factor, *, offset=0, axis=None):
     """Downsample multidimensional array.
 
@@ -45,13 +74,13 @@ def downsample(x, factor, *, offset=0, axis=None):
     x : array_like
         Array to downsample.
 
-    factor : integer
+    factor : int
         Downsampling factor, strictly positive.
 
-    offset : integer, default 0
+    offset : int, default=0
         Offset for sampling, circular.
 
-    axis : None | int | tuple of int, default None
+    axis : None | int | tuple of int, default=None
         Axis or axes along which to downsample.
         If None, input array is downsampled along all its dimensions.
 
@@ -92,13 +121,13 @@ def upsample(x, factor, *, offset=0, axis=None):
     x : array_like
         Array to upsample.
 
-    factor : integer
+    factor : int
         Upsampling factor, strictly positive.
 
-    offset : integer, default 0
+    offset : int, default=0
         Offset for sampling, circular.
 
-    axis : None | int | tuple of int, default None
+    axis : None | int | tuple of int, default=None
         Axis or axes along which to upsample.
         If None, input array is upsampled along all its dimensions.
 
@@ -134,7 +163,7 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
 
     This function performs an IIR-based resampling: upsampling,
     IIR anti-aliasing filtering, and downsampling.
-    It is the upfirdn [1]_ counterpart for IIR filtering.
+    It is the ``upfirdn`` [1]_ counterpart for IIR filtering.
 
     Parameters
     ----------
@@ -146,16 +175,17 @@ def upiirdn(x, iir, *, up=1, down=1, zero_phase=True, axis=-1):
         [2]_, in any representation: transfer function, zeros-poles-gain or
         state-space.
 
-    up : int, default 1
+    up : int, default=1
         Upsampling factor.
 
-    down : int, default 1
+    down : int, default=1
         Downsampling factor.
 
     zero_phase : bool, default True
-        Prevent phase shift by filtering with filtfilt instead of lfilter.
+        Prevent phase shift by filtering with ``filtfilt`` instead of
+        ``lfilter``.
 
-    axis : int, default -1
+    axis : int, default=-1
         Axis along which to resample: upsample, filter (applied to each
         subarray along this axis), and downsample.
 
